@@ -5,4 +5,4 @@ window.KIDS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRj3vks
 window.KIDS_API_URL = "";
 
 // Optional: the sheet's normal edit link (https://docs.google.com/spreadsheets/d/<ID>/edit):
-window.KIDS_SHEET_EDIT_URL = "https://script.google.com/macros/s/AKfycbxZEas1LBxgCVfm2629hAYEaDUTjx5WI_EHYsOoo0ZfJiX0vkzQEKqXMa4fcawaJfkw/exec";
+window.KIDS_SHEET_EDIT_URL = "https://script.google.com/macros/s/AKfycbywiczEUHkR_lPww4j_eIxKQs4m7HAHHvEKuvDuoWvqauu5TCrNM7Js9ao7ADtcJAxO/exec";
