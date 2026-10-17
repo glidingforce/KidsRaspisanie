@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><style>body{margin:0}</style></head><body><script>window.KIDS_DEFAULT_LANG='ru';</script><title>לו״ז ילדים אילן ולי ים</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><script src="config.js"></script></head><body style="margin:0"><script>window.KIDS_DEFAULT_LANG='ru';</script><title>לו״ז ילדים אילן ולי ים</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap">
 <style>
 /* Layout: one sheet. Status line, month pager, 7-column month grid colored by parent, holiday list for the month. */
@@ -8,6 +8,7 @@
   --liyam:#2b6fd6; --liyam-soft:#e0ebfb; --liyam-ink:#143f85;
   --past-bg:#eceeed; --past-ink:#99a29e; --past-line:#cdd3d0;
   --hol:#d97706; --hol-soft:#fdf0d9; --hol-ink:#7a4204;
+  --ev:#a21caf; --ev-ink:#ffffff;
   --font:"Rubik","Segoe UI",Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -16,7 +17,7 @@
     --ilan:#37c277; --ilan-soft:#173b29; --ilan-ink:#bff0d3;
     --liyam:#5a97f0; --liyam-soft:#182f52; --liyam-ink:#cfe0fb;
     --past-bg:#202625; --past-ink:#66716d; --past-line:#343d3a;
-    --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795;
+    --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730;
     color-scheme:dark;
   }
 }
@@ -25,7 +26,7 @@
   --ilan:#37c277; --ilan-soft:#173b29; --ilan-ink:#bff0d3;
   --liyam:#5a97f0; --liyam-soft:#182f52; --liyam-ink:#cfe0fb;
   --past-bg:#202625; --past-ink:#66716d; --past-line:#343d3a;
-  --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795;
+  --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730;
   color-scheme:dark;
 }
 body{background:var(--bg);color:var(--fg);font-family:var(--font);padding-inline:16px;padding-block:24px;}
@@ -85,6 +86,20 @@ button:disabled{opacity:.35;cursor:default;}
 .swrow .when{font-weight:700;font-variant-numeric:tabular-nums;min-width:5.6em;}
 .swrow .nm{flex:1;min-width:0;}
 [hidden]{display:none!important;}
+.cell .ev{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;box-sizing:border-box;width:calc(100% - 4px);background:var(--ev);color:var(--ev-ink);border-radius:5px;padding:2px 3px;font-size:.68rem;font-weight:700;line-height:1.2;overflow:hidden;overflow-wrap:anywhere;}
+.swappanel,.swappanel *{box-sizing:border-box;}
+.swappanel>*{min-width:0;max-width:100%;}
+.cell.past .ev{opacity:.5;}
+.dot.e{background:var(--ev);}
+.swappanel{flex-direction:column;align-items:stretch;}
+.swappanel .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
+.swappanel .evadd{display:flex;gap:8px;}
+.swappanel input{flex:1;min-width:0;font:inherit;color:var(--fg);background:var(--sheet);border:1px solid var(--line);border-radius:9px;padding:8px 10px;}
+.swappanel input:focus-visible{outline:3px solid var(--ev);outline-offset:1px;}
+.evitem{display:flex;align-items:center;gap:8px;justify-content:space-between;}
+.evtag{background:var(--ev);color:var(--ev-ink);border-radius:7px;padding:4px 10px;font-weight:700;min-width:0;overflow-wrap:anywhere;}
+.syncnote{font-size:.85rem;color:var(--muted);}
+.syncnote.err{color:var(--hol-ink);background:var(--hol-soft);border-radius:8px;padding:6px 10px;}
 </style>
 
 <section class="sheet" id="sheet" dir="rtl" lang="he">
@@ -109,7 +124,10 @@ button:disabled{opacity:.35;cursor:default;}
   <div class="hols" id="hols"></div>
   <h3 id="swaps-title"></h3>
   <div class="hols" id="swaps"></div>
+  <h3 id="evs-title"></h3>
+  <div class="hols" id="evs"></div>
   <p class="note" id="swap-note"></p>
+  <p class="syncnote" id="sync"></p>
   <p class="note" id="note"></p>
 </section>
 
@@ -157,7 +175,7 @@ function holidays(y){
       dayFull:['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'],
       months:['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'],
       today:'היום',goToday:'חזרה להיום',kids:'הילדים',weekend:'הסופ״ש הקרוב',prev:'החודש הקודם',next:'החודש הבא',
-      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום, לוחצים עליו בלוח. ההחלפות נשמרות רק במכשיר הזה.',holiday:'חג',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
+      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח.',evAdd:'הוספה',evPh:'אירוע (למשל: תיאטרון)',evDel:'מחיקה',evsTitle:'אירועים קרובים',noEvs:'אין אירועים.',event:'אירוע',syncShared:'',sheetOk:'הנתונים נטענו מהגיליון. עודכן ב-',sheetNone:'לא הוגדר גיליון. מוצג הלו״ז הקבוע בלבד.',sheetFail:'לא הצלחתי לטעון את הגיליון. מוצג הלו״ז הקבוע בלבד.',sheetLoading:'טוען את הגיליון...',editSheet:'עריכה בגיליון',sheetNote:'החלפות ואירועים מוסיפים בגיליון. הלוח מתעדכן לבד תוך כמה דקות.',syncLocal:'השינויים נשמרים רק במכשיר הזה.',syncRO:'אין לך הרשאה לשנות את הלוח. אפשר רק לצפות.',syncErr:'השמירה נכשלה. נסה שוב.',holiday:'חג',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
       note:'קבוע בכל שבוע: ראשון ורביעי אצל לי ים, שני ושלישי אצל אילן. חמישי וסופ״ש מתחלפים. החגים מוצגים לידיעה בלבד: הלו״ז לא משתנה בגללם.',
       h:{erh:'ערב ראש השנה',rh:'ראש השנה',eyk:'ערב יום כיפור',yk:'יום כיפור',esuk:'ערב סוכות',suk:'סוכות',chs:'חול המועד סוכות',st:'שמחת תורה',han:'חנוכה',tu:'ט״ו בשבט',pur:'פורים',spur:'שושן פורים',epes:'ערב פסח',pes:'פסח',chp:'חול המועד פסח',pes7:'שביעי של פסח',shoa:'יום השואה',zik:'יום הזיכרון',atz:'יום העצמאות',lag:'ל״ג בעומר',eshav:'ערב שבועות',shav:'שבועות',tba:'תשעה באב'}},
     ru:{dir:'ltr',h1:'Расписание детей',names:{i:'Илан ❤️',l:'Ли Ям'},at:{i:'у Илана ❤️',l:'у Ли Ям'},
@@ -165,7 +183,7 @@ function holidays(y){
       dayFull:['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
       months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
       today:'Сегодня',goToday:'Вернуться к сегодня',kids:'дети',weekend:'Ближайшие выходные',prev:'Предыдущий месяц',next:'Следующий месяц',
-      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день, нажмите на него в календаре. Замены сохраняются только на этом устройстве.',holiday:'Праздник',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
+      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день или добавить событие, нажмите на день в календаре.',evAdd:'Добавить',evPh:'Событие (например: театр)',evDel:'Удалить',evsTitle:'Ближайшие события',noEvs:'Событий нет.',event:'Событие',syncShared:'',sheetOk:'Данные загружены из таблицы. Обновлено в ',sheetNone:'Таблица не подключена. Показано только постоянное расписание.',sheetFail:'Не удалось загрузить таблицу. Показано только постоянное расписание.',sheetLoading:'Загрузка таблицы...',editSheet:'Редактировать в таблице',sheetNote:'Замены и события добавляются в таблице. Календарь обновится сам через несколько минут.',syncLocal:'Изменения сохраняются только на этом устройстве.',syncRO:'У вас нет прав менять календарь. Только просмотр.',syncErr:'Не удалось сохранить. Попробуйте ещё раз.',holiday:'Праздник',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
       note:'Каждую неделю: воскресенье и среда у Ли Ям, понедельник и вторник у Илана. Четверг и выходные чередуются. Праздники показаны для сведения: расписание из-за них не меняется.',
       h:{erh:'Канун Рош ха-Шана',rh:'Рош ха-Шана',eyk:'Канун Йом Кипур',yk:'Йом Кипур',esuk:'Канун Суккот',suk:'Суккот',chs:'Холь ха-моэд Суккот',st:'Симхат Тора',han:'Ханука',tu:'Ту би-Шват',pur:'Пурим',spur:'Шушан Пурим',epes:'Канун Песаха',pes:'Песах',chp:'Холь ха-моэд Песах',pes7:'Седьмой день Песаха',shoa:'Йом ха-Шоа',zik:'Йом ха-Зикарон',atz:'Йом ха-Ацмаут',lag:'Лаг ба-Омер',eshav:'Канун Шавуот',shav:'Шавуот',tba:'Тиша бе-Ав'}}
   };
@@ -173,8 +191,27 @@ function holidays(y){
   function $(id){return document.getElementById(id);}
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
   var lang=window.KIDS_DEFAULT_LANG||'he', swaps={}, sel=null;
-  try{(JSON.parse(localStorage.getItem('kids-swaps'))||[]).forEach(function(x){swaps[x]=1;});}catch(e){}
-  function save(){try{localStorage.setItem('kids-swaps',JSON.stringify(Object.keys(swaps).map(Number)));}catch(e){}}
+  var events={}, db=null, mode='local', ro=false, err=false;
+  
+  ro=true; var loadState='none', loadedAt=null;
+  function saveLocal(){try{localStorage.setItem('kids-swaps',JSON.stringify(Object.keys(swaps).map(Number)));localStorage.setItem('kids-events',JSON.stringify(events));}catch(e){}}
+  function fail(e){err=true;if(e&&e.code==='invalid_argument')ro=true;render();}
+  function toggleSwap(n){
+    if(db){var r=db.collection('swaps').doc(String(n));(swaps[n]?r.delete():r.set({n:n})).then(function(){err=false;},fail);}
+    if(swaps[n])delete swaps[n];else swaps[n]=1;
+    if(!db)saveLocal();
+  }
+  function addEvent(n,title){
+    title=title.trim().slice(0,80);if(!title)return;
+    var id='e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    events[id]={n:n,title:title};
+    if(db)db.collection('events').doc(id).set({n:n,title:title}).then(function(){err=false;},fail);else saveLocal();
+  }
+  function delEvent(id){
+    delete events[id];
+    if(db)db.collection('events').doc(id).delete().then(function(){err=false;},fail);else saveLocal();
+  }
+  function evOn(n){var a=[];for(var k in events)if(events[k].n===n)a.push(k);return a;}
   function W(n){var b=who(n);return swaps[n]?(b==='i'?'l':'i'):b;}
   function dmy(n){var d=new Date(n*864e5);return d.getUTCDate()+'.'+(d.getUTCMonth()+1)+'.'+String(d.getUTCFullYear()).slice(2);}
   try{var saved=localStorage.getItem('kids-lang');if(saved==='ru'||saved==='he')lang=saved;}catch(e){}
@@ -217,7 +254,7 @@ function holidays(y){
     for(n=first;n<=last;n++){
       var c=W(n), cls='cell '+c+(n<tn?' past':'')+(n===tn?' today':'')+(swaps[n]?' swapped':'')+(sel===n?' sel':'');
       h+='<div role="button" tabindex="0" data-n="'+n+'" class="'+cls+'"'+(hm[n]?' title="'+esc(t.h[hm[n]])+'"':'')+'>'+(hm[n]?'<span class="hd"></span>':'')+
-         (swaps[n]?'<span class="sw">⇄</span>':'')+'<span class="d">'+(n-first+1)+'</span><span>'+esc(t.names[c])+'</span></div>';
+         (swaps[n]?'<span class="sw">⇄</span>':'')+'<span class="d">'+(n-first+1)+'</span><span>'+esc(t.names[c])+'</span>'+evOn(n).map(function(k){return '<span class="ev">'+esc(events[k].title)+'</span>';}).join('')+'</div>';
     }
     $('grid').innerHTML=h;
 
@@ -226,18 +263,29 @@ function holidays(y){
     if(sel!==null&&sel>=first&&sel<=last){
       var cw=W(sel), ow=cw==='i'?'l':'i';
       p.hidden=false;
-      p.innerHTML='<span>'+esc(t.dayFull[dow(sel)])+' '+dm(sel)+': <span class="chip '+cw+'">'+esc(t.at[cw])+'</span></span><span class="acts"><button type="button" id="do-swap">'+esc(swaps[sel]?t.undo:t.moveTo+' '+t.to[ow])+'</button><button type="button" id="no-swap">'+esc(t.close)+'</button></span>';
-      $('do-swap').onclick=function(){if(swaps[sel])delete swaps[sel];else swaps[sel]=1;save();sel=null;render();};
+      var eh='';evOn(sel).forEach(function(k){eh+='<div class="evitem"><span class="evtag">'+esc(events[k].title)+'</span>'+(ro?'':'<button type="button" data-ed="'+k+'">'+esc(t.evDel)+'</button>')+'</div>';});
+      p.innerHTML='<div class="row"><span>'+esc(t.dayFull[dow(sel)])+' '+dm(sel)+': <span class="chip '+cw+'">'+esc(t.at[cw])+'</span></span><span class="acts">'+(ro?'':'<button type="button" id="do-swap">'+esc(swaps[sel]?t.undo:t.moveTo+' '+t.to[ow])+'</button>')+'<button type="button" id="no-swap">'+esc(t.close)+'</button></span></div>'+eh+
+        (ro?'':'<form class="evadd" id="evform"><input id="evtitle" maxlength="80" placeholder="'+esc(t.evPh)+'" aria-label="'+esc(t.event)+'"><button type="submit">'+esc(t.evAdd)+'</button></form>');
+      if(!ro){
+        $('do-swap').onclick=function(){toggleSwap(sel);sel=null;render();};
+        $('evform').onsubmit=function(e){e.preventDefault();var v=$('evtitle').value;if(v.trim()){addEvent(sel,v);render();}};
+        p.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){delEvent(b.getAttribute('data-ed'));render();};});
+      }
       $('no-swap').onclick=function(){sel=null;render();};
     }else{p.hidden=true;p.innerHTML='';}
     var ks=Object.keys(swaps).map(Number).filter(function(x){return x>=tn;}).sort(function(a,b){return a-b;}), sh='';
-    ks.forEach(function(x){var c2=W(x);sh+='<div class="swrow"><span class="when" dir="ltr">'+dmy(x)+'</span><span class="nm">'+esc(t.dayFull[dow(x)])+' <span class="chip '+c2+'">'+esc(t.at[c2])+'</span></span><button type="button" data-rm="'+x+'">'+esc(t.undoShort)+'</button></div>';});
+    ks.forEach(function(x){var c2=W(x);sh+='<div class="swrow"><span class="when" dir="ltr">'+dmy(x)+'</span><span class="nm">'+esc(t.dayFull[dow(x)])+' <span class="chip '+c2+'">'+esc(t.at[c2])+'</span></span>'+(ro?'':'<button type="button" data-rm="'+x+'">'+esc(t.undoShort)+'</button>')+'</div>';});
     $('swaps-title').textContent=t.swapsTitle;
     $('swaps').innerHTML=sh||'<p class="note">'+esc(t.noSwaps)+'</p>';
-    $('swap-note').textContent=t.swapNote;
+    $('swap-note').textContent=t.sheetNote;
+    var el=Object.keys(events).filter(function(k){return events[k].n>=tn;}).sort(function(a,b){return events[a].n-events[b].n;}).slice(0,12), eh2='';
+    el.forEach(function(k){var x=events[k].n;eh2+='<div class="swrow"><span class="when" dir="ltr">'+dmy(x)+'</span><span class="nm"><span class="evtag">'+esc(events[k].title)+'</span></span><span class="chip '+W(x)+'">'+esc(t.at[W(x)])+'</span></div>';});
+    $('evs-title').textContent=t.evsTitle;
+    $('evs').innerHTML=eh2||'<p class="note">'+esc(t.noEvs)+'</p>';
+    var sy=$('sync');sy.className='syncnote'+(err&&!ro?' err':'');sy.className='syncnote'+(loadState==='fail'||loadState==='none'?' err':'');sy.innerHTML='';var st=loadState==='ok'?t.sheetOk+loadedAt:(loadState==='fail'?t.sheetFail:(loadState==='loading'?t.sheetLoading:t.sheetNone));sy.appendChild(document.createTextNode(st));if(window.KIDS_SHEET_EDIT_URL&&/^https:\/\/docs\.google\.com\//.test(window.KIDS_SHEET_EDIT_URL)){var a=document.createElement('a');a.href=window.KIDS_SHEET_EDIT_URL;a.target='_blank';a.rel='noopener';a.textContent=' '+t.editSheet;a.style.fontWeight='700';a.style.color='var(--ev)';sy.appendChild(document.createTextNode(' · '));sy.appendChild(a);}
 
     $('legend').innerHTML='<span><i class="dot i"></i>'+esc(t.names.i)+'</span><span><i class="dot l"></i>'+esc(t.names.l)+'</span>'+
-      '<span><i class="dot p"></i>'+esc(t.past)+'</span><span><b>⇄</b>'+esc(t.swapped)+'</span><span><i class="dot h"></i>'+esc(t.holiday)+'</span>';
+      '<span><i class="dot p"></i>'+esc(t.past)+'</span><span><b>⇄</b>'+esc(t.swapped)+'</span><span><i class="dot e"></i>'+esc(t.event)+'</span><span><i class="dot h"></i>'+esc(t.holiday)+'</span>';
 
     // holiday list: merge consecutive days of the same holiday
     var runs=[], cur=null;
@@ -267,8 +315,47 @@ function holidays(y){
   function pick(e){var el=e.target.closest?e.target.closest('[data-n]'):null;if(!el)return;var n=+el.getAttribute('data-n');sel=(sel===n?null:n);render();}
   $('grid').addEventListener('click',pick);
   $('grid').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(e);}});
-  $('swaps').addEventListener('click',function(e){var x=e.target.getAttribute('data-rm');if(x){delete swaps[x];save();render();}});
+  $('swaps').addEventListener('click',function(e){var x=e.target.getAttribute('data-rm');if(x&&!ro){toggleSwap(+x);render();}});
   render();
+  function parseCSV(txt){
+    var rows=[],row=[],f='',q=false,i,c;
+    for(i=0;i<txt.length;i++){c=txt[i];
+      if(q){if(c==='"'){if(txt[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+      else if(c==='"')q=true;else if(c===','){row.push(f);f='';}
+      else if(c==='\n'||c==='\r'){if(c==='\r'&&txt[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f='';}
+      else f+=c;}
+    if(f!==''||row.length){row.push(f);rows.push(row);}
+    return rows;
+  }
+  function parseDate(v){
+    v=String(v||'').trim();var m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if(m)return dn(+m[1],+m[2]-1,+m[3]);
+    m=v.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/);   // day first, as in Israel
+    if(m){var y=+m[3];if(y<100)y+=2000;return dn(y,+m[2]-1,+m[1]);}
+    return null;
+  }
+  function isSwap(v){v=String(v||'').trim().toLowerCase();return v==='החלפה'||v==='swap'||v==='замена';}
+  function loadSheet(){
+    var url=window.KIDS_SHEET_URL;
+    if(!url||!/^https:\/\/docs\.google\.com\//.test(url)){loadState='none';render();return;}
+    if(loadState!=='ok'){loadState='loading';render();}
+    fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(txt){
+      var rows=parseCSV(txt),sw={},ev={},k=0;
+      rows.forEach(function(r,idx){
+        var n=parseDate(r[0]);if(n===null)return;            // skips the header row and bad dates
+        var desc=String(r[2]||'').trim().slice(0,80);
+        if(isSwap(r[1]))sw[n]=sw[n]?0:1;                     // the same date twice cancels out
+        else if(desc){ev['r'+(k++)]={n:n,title:desc};}
+      });
+      for(var x in sw)if(!sw[x])delete sw[x];
+      swaps=sw;events=ev;loadState='ok';
+      var d=new Date();loadedAt=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+      render();
+    }).catch(function(){if(loadState!=='ok')loadState='fail';render();});
+  }
+  loadSheet();
+  setInterval(function(){if(!document.hidden)loadSheet();},5*60*1000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)loadSheet();});
 })();
 </script>
 </body></html>
