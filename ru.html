@@ -8,7 +8,7 @@
   --liyam:#2b6fd6; --liyam-soft:#e0ebfb; --liyam-ink:#143f85;
   --past-bg:#eceeed; --past-ink:#99a29e; --past-line:#cdd3d0;
   --hol:#d97706; --hol-soft:#fdf0d9; --hol-ink:#7a4204;
-  --ev:#a21caf; --ev-ink:#ffffff;
+  --ev:#a21caf; --ev-ink:#ffffff; --vic-bg:#f6ecd4; --vic-ink:#7a5512; --vic-line:#c9971f;
   --font:"Rubik","Segoe UI",Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -17,7 +17,7 @@
     --ilan:#37c277; --ilan-soft:#173b29; --ilan-ink:#bff0d3;
     --liyam:#5a97f0; --liyam-soft:#182f52; --liyam-ink:#cfe0fb;
     --past-bg:#202625; --past-ink:#66716d; --past-line:#343d3a;
-    --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730;
+    --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730; --vic-bg:#3a2e12; --vic-ink:#f3d48a; --vic-line:#d9a93a;
     color-scheme:dark;
   }
 }
@@ -26,7 +26,7 @@
   --ilan:#37c277; --ilan-soft:#173b29; --ilan-ink:#bff0d3;
   --liyam:#5a97f0; --liyam-soft:#182f52; --liyam-ink:#cfe0fb;
   --past-bg:#202625; --past-ink:#66716d; --past-line:#343d3a;
-  --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730;
+  --hol:#f5a524; --hol-soft:#3a2a0c; --hol-ink:#fbd795; --ev:#e879f9; --ev-ink:#2a0730; --vic-bg:#3a2e12; --vic-ink:#f3d48a; --vic-line:#d9a93a;
   color-scheme:dark;
 }
 body{background:var(--bg);color:var(--fg);font-family:var(--font);padding-inline:16px;padding-block:24px;}
@@ -99,6 +99,12 @@ button:disabled{opacity:.35;cursor:default;}
 .evitem{display:flex;align-items:center;gap:8px;justify-content:space-between;}
 .evtag{background:var(--ev);color:var(--ev-ink);border-radius:7px;padding:4px 10px;font-weight:700;min-width:0;overflow-wrap:anywhere;}
 .syncnote{font-size:.85rem;color:var(--muted);}
+.vband{height:24px;margin-top:-1px;background:var(--vic-bg);color:var(--vic-ink);border-top:3px solid var(--vic-line);border-radius:6px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.vband.past{opacity:.5;}
+.dot.v{background:var(--vic-line);}
+.chip.v{background:var(--vic-bg);color:var(--vic-ink);}
+.vform{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.vform input{flex:0 1 auto;}
 .syncnote.err{color:var(--hol-ink);background:var(--hol-soft);border-radius:8px;padding:6px 10px;}
 </style>
 
@@ -175,7 +181,7 @@ function holidays(y){
       dayFull:['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'],
       months:['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'],
       today:'היום',goToday:'חזרה להיום',kids:'הילדים',weekend:'הסופ״ש הקרוב',prev:'החודש הקודם',next:'החודש הבא',
-      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח.',evAdd:'הוספה',evPh:'אירוע (למשל: תיאטרון)',evDel:'מחיקה',evsTitle:'אירועים קרובים',noEvs:'אין אירועים.',event:'אירוע',syncShared:'',sheetOk:'הנתונים נטענו מהגיליון. עודכן ב-',sheetNone:'לא הוגדר גיליון. מוצג הלו״ז הקבוע בלבד.',sheetFail:'לא הצלחתי לטעון את הגיליון. מוצג הלו״ז הקבוע בלבד.',sheetLoading:'טוען את הגיליון...',editSheet:'עריכה בגיליון',sheetNote:'החלפות ואירועים מוסיפים בגיליון. הלוח מתעדכן לבד תוך כמה דקות.',apiNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח. בפעם הראשונה תתבקש להקליד קוד.',saving:'שומר...',syncLocal:'השינויים נשמרים רק במכשיר הזה.',syncRO:'אין לך הרשאה לשנות את הלוח. אפשר רק לצפות.',syncErr:'השמירה נכשלה. נסה שוב.',holiday:'חג',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
+      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח.',evAdd:'הוספה',evPh:'אירוע (למשל: תיאטרון)',evDel:'מחיקה',evsTitle:'אירועים קרובים',noEvs:'אין אירועים.',event:'אירוע',syncShared:'',sheetOk:'הנתונים נטענו מהגיליון. עודכן ב-',sheetNone:'לא הוגדר גיליון. מוצג הלו״ז הקבוע בלבד.',sheetFail:'לא הצלחתי לטעון את הגיליון. מוצג הלו״ז הקבוע בלבד.',sheetLoading:'טוען את הגיליון...',editSheet:'עריכה בגיליון',sheetNote:'החלפות ואירועים מוסיפים בגיליון. הלוח מתעדכן לבד תוך כמה דקות.',apiNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח. בפעם הראשונה תתבקש להקליד קוד.',saving:'שומר...',syncLocal:'השינויים נשמרים רק במכשיר הזה.',syncRO:'אין לך הרשאה לשנות את הלוח. אפשר רק לצפות.',syncErr:'השמירה נכשלה. נסה שוב.',holiday:'חג',vName:'ויקטור',vHere:'בארץ',vUntil:'בארץ עד ',vAbroad:'בחו״ל',vNext:'בחו״ל · נוחת ',vLand:'נחת ',vLeave:'עוזב ',vAdd:'ביקור של ויקטור: נוחת היום, עוזב ב-',vAddBtn:'הוספת ביקור',vDel:'מחיקת הביקור',vVisit:'ויקטור בארץ ',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
       note:'קבוע בכל שבוע: ראשון ורביעי אצל לי ים, שני ושלישי אצל אילן. חמישי וסופ״ש מתחלפים. החגים מוצגים לידיעה בלבד: הלו״ז לא משתנה בגללם.',
       h:{erh:'ערב ראש השנה',rh:'ראש השנה',eyk:'ערב יום כיפור',yk:'יום כיפור',esuk:'ערב סוכות',suk:'סוכות',chs:'חול המועד סוכות',st:'שמחת תורה',han:'חנוכה',tu:'ט״ו בשבט',pur:'פורים',spur:'שושן פורים',epes:'ערב פסח',pes:'פסח',chp:'חול המועד פסח',pes7:'שביעי של פסח',shoa:'יום השואה',zik:'יום הזיכרון',atz:'יום העצמאות',lag:'ל״ג בעומר',eshav:'ערב שבועות',shav:'שבועות',tba:'תשעה באב'}},
     ru:{dir:'ltr',h1:'Расписание детей',names:{i:'Илан ❤️',l:'Ли Ям'},at:{i:'у Илана ❤️',l:'у Ли Ям'},
@@ -183,7 +189,7 @@ function holidays(y){
       dayFull:['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
       months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
       today:'Сегодня',goToday:'Вернуться к сегодня',kids:'дети',weekend:'Ближайшие выходные',prev:'Предыдущий месяц',next:'Следующий месяц',
-      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день или добавить событие, нажмите на день в календаре.',evAdd:'Добавить',evPh:'Событие (например: театр)',evDel:'Удалить',evsTitle:'Ближайшие события',noEvs:'Событий нет.',event:'Событие',syncShared:'',sheetOk:'Данные загружены из таблицы. Обновлено в ',sheetNone:'Таблица не подключена. Показано только постоянное расписание.',sheetFail:'Не удалось загрузить таблицу. Показано только постоянное расписание.',sheetLoading:'Загрузка таблицы...',editSheet:'Редактировать в таблице',sheetNote:'Замены и события добавляются в таблице. Календарь обновится сам через несколько минут.',apiNote:'Чтобы поменять день или добавить событие, нажмите на день. В первый раз нужно ввести код.',saving:'Сохранение...',syncLocal:'Изменения сохраняются только на этом устройстве.',syncRO:'У вас нет прав менять календарь. Только просмотр.',syncErr:'Не удалось сохранить. Попробуйте ещё раз.',holiday:'Праздник',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
+      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день или добавить событие, нажмите на день в календаре.',evAdd:'Добавить',evPh:'Событие (например: театр)',evDel:'Удалить',evsTitle:'Ближайшие события',noEvs:'Событий нет.',event:'Событие',syncShared:'',sheetOk:'Данные загружены из таблицы. Обновлено в ',sheetNone:'Таблица не подключена. Показано только постоянное расписание.',sheetFail:'Не удалось загрузить таблицу. Показано только постоянное расписание.',sheetLoading:'Загрузка таблицы...',editSheet:'Редактировать в таблице',sheetNote:'Замены и события добавляются в таблице. Календарь обновится сам через несколько минут.',apiNote:'Чтобы поменять день или добавить событие, нажмите на день. В первый раз нужно ввести код.',saving:'Сохранение...',syncLocal:'Изменения сохраняются только на этом устройстве.',syncRO:'У вас нет прав менять календарь. Только просмотр.',syncErr:'Не удалось сохранить. Попробуйте ещё раз.',holiday:'Праздник',vName:'Витя',vHere:'в Израиле',vUntil:'в Израиле до ',vAbroad:'за границей',vNext:'за границей · прилёт ',vLand:'прилёт ',vLeave:'вылет ',vAdd:'Визит Вити: прилёт сегодня, вылет ',vAddBtn:'Добавить визит',vDel:'Удалить визит',vVisit:'Витя в Израиле ',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
       note:'Каждую неделю: воскресенье и среда у Ли Ям, понедельник и вторник у Илана. Четверг и выходные чередуются. Праздники показаны для сведения: расписание из-за них не меняется.',
       h:{erh:'Канун Рош ха-Шана',rh:'Рош ха-Шана',eyk:'Канун Йом Кипур',yk:'Йом Кипур',esuk:'Канун Суккот',suk:'Суккот',chs:'Холь ха-моэд Суккот',st:'Симхат Тора',han:'Ханука',tu:'Ту би-Шват',pur:'Пурим',spur:'Шушан Пурим',epes:'Канун Песаха',pes:'Песах',chp:'Холь ха-моэд Песах',pes7:'Седьмой день Песаха',shoa:'Йом ха-Шоа',zik:'Йом ха-Зикарон',atz:'Йом ха-Ацмаут',lag:'Лаг ба-Омер',eshav:'Канун Шавуот',shav:'Шавуот',tba:'Тиша бе-Ав'}}
   };
@@ -219,10 +225,14 @@ function holidays(y){
     events['tmp'+Date.now()]={n:n,title:title};
     send({op:'add',date:ddmm(n),title:title});
   }
+  function addVisit(a,b){visits.push({a:a,b:b});send({op:'vadd',date:ddmm(a),until:ddmm(b)});}
+  function delVisit(v){visits=visits.filter(function(x){return x!==v;});send({op:'vdel',date:ddmm(v.a)});}
   function delEvent(id){
     var e=events[id];if(!e)return;delete events[id];
     send({op:'del',date:ddmm(e.n),title:e.title});
   }
+  var visits=[];
+  function vOn(n){for(var i=0;i<visits.length;i++)if(n>=visits[i].a&&n<=visits[i].b)return visits[i];return null;}
   function evOn(n){var a=[];for(var k in events)if(events[k].n===n)a.push(k);return a;}
   function W(n){var b=who(n);return swaps[n]?(b==='i'?'l':'i'):b;}
   function dmy(n){var d=new Date(n*864e5);return d.getUTCDate()+'.'+(d.getUTCMonth()+1)+'.'+String(d.getUTCFullYear()).slice(2);}
@@ -257,16 +267,27 @@ function holidays(y){
     var w=W(tn), sat=tn+(6-dow(tn)), fri=sat-1, ww=W(sat);
     $('status').innerHTML=
       '<div><b>'+esc(t.today)+'</b>, '+esc(t.dayFull[dow(tn)])+' '+dm(tn)+': '+esc(t.kids)+' <span class="chip '+w+'">'+esc(t.at[w])+'</span></div>'+
-      '<div><b>'+esc(t.weekend)+'</b> ('+dm(fri)+' - '+dm(sat)+'): <span class="chip '+ww+'">'+esc(t.at[ww])+'</span></div>';
+      '<div><b>'+esc(t.weekend)+'</b> ('+dm(fri)+' - '+dm(sat)+'): <span class="chip '+ww+'">'+esc(t.at[ww])+'</span></div>'+
+      (function(){var cur=vOn(tn),nx=null;visits.forEach(function(v){if(v.a>tn&&(!nx||v.a<nx.a))nx=v;});
+        var txt=cur?t.vUntil+dm(cur.b):(nx?t.vNext+dm(nx.a):t.vAbroad);
+        return '<div><b>'+esc(t.vName)+'</b>: <span class="chip'+(cur?' v':'')+'">'+esc(txt)+'</span></div>';})();
 
     // grid
     var first=dn(vy,vm,1), last=dn(vy,vm+1,0), hm=holMap(vy), h='', n, i;
     t.days.forEach(function(d){h+='<div class="dayname">'+esc(d)+'</div>';});
-    for(i=0;i<dow(first);i++)h+='<div></div>';
     for(n=first;n<=last;n++){
       var c=W(n), cls='cell '+c+(n<tn?' past':'')+(n===tn?' today':'')+(swaps[n]?' swapped':'')+(sel===n?' sel':'');
-      h+='<div role="button" tabindex="0" data-n="'+n+'" class="'+cls+'"'+(hm[n]?' title="'+esc(t.h[hm[n]])+'"':'')+'>'+(hm[n]?'<span class="hd"></span>':'')+
+      h+='<div role="button" tabindex="0" data-n="'+n+'" style="grid-column:'+(dow(n)+1)+'" class="'+cls+'"'+(hm[n]?' title="'+esc(t.h[hm[n]])+'"':'')+'>'+(hm[n]?'<span class="hd"></span>':'')+
          (swaps[n]?'<span class="sw">⇄</span>':'')+'<span class="d">'+(n-first+1)+'</span><span>'+esc(t.names[c])+'</span>'+evOn(n).map(function(k){return '<span class="ev">'+esc(events[k].title)+'</span>';}).join('')+'</div>';
+      if(dow(n)===6||n===last){                       // end of a week row: draw Victor's band under it
+        var ws=Math.max(first,n-dow(n)),x=ws;
+        while(x<=n){var v=vOn(x);if(!v){x++;continue;}
+          var a=x,b=Math.min(n,v.b),len=b-a+1,txt;
+          if(len<=2)txt=t.vName;
+          else txt=(a===v.a?'✈ '+t.vLand+dm(v.a)+' · ':'')+t.vName+' '+t.vHere+(b===v.b?' · '+t.vLeave+dm(v.b):'');
+          h+='<div class="vband'+(b<tn?' past':'')+'" style="grid-column:'+(dow(a)+1)+' / '+(dow(b)+2)+'" title="'+esc(t.vVisit+dm(v.a)+' - '+dm(v.b))+'">'+esc(txt)+'</div>';
+          x=b+1;}
+      }
     }
     $('grid').innerHTML=h;
 
@@ -277,10 +298,15 @@ function holidays(y){
       p.hidden=false;
       var eh='';evOn(sel).forEach(function(k){eh+='<div class="evitem"><span class="evtag">'+esc(events[k].title)+'</span>'+(ro?'':'<button type="button" data-ed="'+k+'">'+esc(t.evDel)+'</button>')+'</div>';});
       p.innerHTML='<div class="row"><span>'+esc(t.dayFull[dow(sel)])+' '+dm(sel)+': <span class="chip '+cw+'">'+esc(t.at[cw])+'</span></span><span class="acts">'+(ro?'':'<button type="button" id="do-swap">'+esc(swaps[sel]?t.undo:t.moveTo+' '+t.to[ow])+'</button>')+'<button type="button" id="no-swap">'+esc(t.close)+'</button></span></div>'+eh+
+        (function(){var v=vOn(sel);if(v)return '<div class="evitem"><span class="chip v">'+esc(t.vVisit+dm(v.a)+' - '+dm(v.b))+'</span>'+(ro?'':'<button type="button" id="vdel">'+esc(t.vDel)+'</button>')+'</div>';
+          if(ro)return '';var d=new Date((sel+7)*864e5).toISOString().slice(0,10);
+          return '<form class="vform" id="vform"><span>'+esc(t.vAdd)+'</span><input type="date" id="vuntil" value="'+d+'" min="'+new Date(sel*864e5).toISOString().slice(0,10)+'"><button type="submit">'+esc(t.vAddBtn)+'</button></form>';})()+
         (ro?'':'<form class="evadd" id="evform"><input id="evtitle" maxlength="80" placeholder="'+esc(t.evPh)+'" aria-label="'+esc(t.event)+'"><button type="submit">'+esc(t.evAdd)+'</button></form>');
       if(!ro){
         $('do-swap').onclick=function(){toggleSwap(sel);sel=null;render();};
         $('evform').onsubmit=function(e){e.preventDefault();var v=$('evtitle').value;if(v.trim()){addEvent(sel,v);render();}};
+        if($('vdel'))$('vdel').onclick=function(){var v=vOn(sel);if(v){delVisit(v);sel=null;render();}};
+        if($('vform'))$('vform').onsubmit=function(e){e.preventDefault();var m=$('vuntil').value.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return;var b=dn(+m[1],+m[2]-1,+m[3]);if(b<sel)return;addVisit(sel,b);sel=null;render();};
         p.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){delEvent(b.getAttribute('data-ed'));render();};});
       }
       $('no-swap').onclick=function(){sel=null;render();};
@@ -297,7 +323,7 @@ function holidays(y){
     var sy=$('sync');sy.className='syncnote'+(err&&!ro?' err':'');sy.className='syncnote'+(loadState==='fail'||loadState==='none'?' err':'');sy.innerHTML='';var st=busy?t.saving:err?t.syncErr:loadState==='ok'?t.sheetOk+loadedAt:(loadState==='fail'?t.sheetFail:(loadState==='loading'?t.sheetLoading:t.sheetNone));sy.appendChild(document.createTextNode(st));if(window.KIDS_SHEET_EDIT_URL&&/^https:\/\/docs\.google\.com\//.test(window.KIDS_SHEET_EDIT_URL)){var a=document.createElement('a');a.href=window.KIDS_SHEET_EDIT_URL;a.target='_blank';a.rel='noopener';a.textContent=' '+t.editSheet;a.style.fontWeight='700';a.style.color='var(--ev)';sy.appendChild(document.createTextNode(' · '));sy.appendChild(a);}
 
     $('legend').innerHTML='<span><i class="dot i"></i>'+esc(t.names.i)+'</span><span><i class="dot l"></i>'+esc(t.names.l)+'</span>'+
-      '<span><i class="dot p"></i>'+esc(t.past)+'</span><span><b>⇄</b>'+esc(t.swapped)+'</span><span><i class="dot e"></i>'+esc(t.event)+'</span><span><i class="dot h"></i>'+esc(t.holiday)+'</span>';
+      '<span><i class="dot p"></i>'+esc(t.past)+'</span><span><b>⇄</b>'+esc(t.swapped)+'</span><span><i class="dot e"></i>'+esc(t.event)+'</span><span><i class="dot h"></i>'+esc(t.holiday)+'</span><span><i class="dot v"></i>'+esc(t.vName)+'</span>';
 
     // holiday list: merge consecutive days of the same holiday
     var runs=[], cur=null;
@@ -348,6 +374,7 @@ function holidays(y){
     if(m){var mi='JanFebMarAprMayJunJulAugSepOctNovDec'.indexOf(m[1])/3;if(mi>=0&&mi%1===0)return dn(+m[3],mi,+m[2]);}
     return null;
   }
+  function isVic(v){v=String(v||'').trim().toLowerCase();return v==='ויקטור'||v==='victor'||v==='витя'||v==='виктор';}
   function isSwap(v){v=String(v||'').trim().toLowerCase();return v==='החלפה'||v==='swap'||v==='замена';}
   function loadSheet(){
     var url=API?API+'?t='+Date.now():window.KIDS_SHEET_URL;
@@ -355,15 +382,16 @@ function holidays(y){
     if(loadState!=='ok'){loadState='loading';render();}
     fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(txt){
       if(busy)return;
-      var rows=API?(JSON.parse(txt).rows||[]):parseCSV(txt),sw={},ev={},k=0;
+      var rows=API?(JSON.parse(txt).rows||[]):parseCSV(txt),sw={},ev={},vs=[],k=0;
       rows.forEach(function(r,idx){
         var n=parseDate(r[0]);if(n===null)return;            // skips the header row and bad dates
         var desc=String(r[2]||'').trim().slice(0,80);
+        if(isVic(r[1])){var b=parseDate(r[2]);if(b!==null&&b>=n)vs.push({a:n,b:b});return;}
         if(isSwap(r[1]))sw[n]=sw[n]?0:1;                     // the same date twice cancels out
         else if(desc){ev['r'+(k++)]={n:n,title:desc};}
       });
       for(var x in sw)if(!sw[x])delete sw[x];
-      swaps=sw;events=ev;loadState='ok';
+      swaps=sw;events=ev;visits=vs;loadState='ok';
       var d=new Date();loadedAt=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
       render();
     }).catch(function(){if(loadState!=='ok')loadState='fail';render();});
