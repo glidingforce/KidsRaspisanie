@@ -106,6 +106,22 @@ button:disabled{opacity:.35;cursor:default;}
 .vform{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .vform input{flex:0 1 auto;}
 .vbtn{background:var(--vic-bg);color:var(--vic-ink);border-color:var(--vic-line);font-weight:700;}
+.vbtn.big{display:flex;align-items:center;gap:10px;font-size:1rem;padding:10px 14px;}
+.vbtn.big .when{background:var(--vic-line);color:#fff;border-radius:7px;padding:2px 9px;font-variant-numeric:tabular-nums;}
+.vband.draft{background:repeating-linear-gradient(135deg,var(--vic-bg) 0 8px,transparent 8px 14px);border:2px dashed var(--vic-line);}
+.cell .vic{position:absolute;bottom:3px;inset-inline-start:4px;font-size:.95rem;line-height:1;}
+.cell.vdraft-a,.cell.vdraft-b{box-shadow:0 0 0 3px var(--vic-line);}
+.vpick{border:2px solid var(--vic-line);background:var(--sheet);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;}
+.vpick h3{display:flex;align-items:center;gap:8px;}
+.legs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.leg{display:flex;flex-direction:column;gap:6px;background:var(--vic-bg);color:var(--vic-ink);border-radius:10px;padding:10px;min-width:0;}
+.leg .ic{font-size:1.8rem;line-height:1;}
+.leg .lbl{font-weight:700;font-size:.9rem;}
+.leg input{font:inherit;font-weight:700;color:var(--fg);background:var(--sheet);border:1px solid var(--vic-line);border-radius:8px;padding:8px;min-width:0;width:100%;box-sizing:border-box;}
+.vpick .acts{display:flex;gap:8px;flex-wrap:wrap;}
+.vpick .save{background:var(--vic-line);color:#fff;border-color:var(--vic-line);font-weight:700;}
+.vlist{display:flex;gap:6px;flex-wrap:wrap;}
+.vopen-btn{margin-inline-start:6px;padding:3px 10px;font-size:.85rem;}
 .syncnote.err{color:var(--hol-ink);background:var(--hol-soft);border-radius:8px;padding:6px 10px;}
 </style>
 
@@ -118,6 +134,7 @@ button:disabled{opacity:.35;cursor:default;}
     </div>
   </div>
   <div class="status" id="status"></div>
+  <div class="vpick" id="vpick" hidden></div>
   <div class="pager">
     <button type="button" class="arrow" id="prev"></button>
     <h2 id="month"></h2>
@@ -182,7 +199,7 @@ function holidays(y){
       dayFull:['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'],
       months:['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'],
       today:'היום',goToday:'חזרה להיום',kids:'הילדים',weekend:'הסופ״ש הקרוב',prev:'החודש הקודם',next:'החודש הבא',
-      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח.',evAdd:'הוספה',evPh:'אירוע (למשל: תיאטרון)',evDel:'מחיקה',evsTitle:'אירועים קרובים',noEvs:'אין אירועים.',event:'אירוע',syncShared:'',sheetOk:'הנתונים נטענו מהגיליון. עודכן ב-',sheetNone:'לא הוגדר גיליון. מוצג הלו״ז הקבוע בלבד.',sheetFail:'לא הצלחתי לטעון את הגיליון. מוצג הלו״ז הקבוע בלבד.',sheetLoading:'טוען את הגיליון...',editSheet:'עריכה בגיליון',sheetNote:'החלפות ואירועים מוסיפים בגיליון. הלוח מתעדכן לבד תוך כמה דקות.',apiNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח. בפעם הראשונה תתבקש להקליד קוד.',saving:'שומר...',syncLocal:'השינויים נשמרים רק במכשיר הזה.',syncRO:'אין לך הרשאה לשנות את הלוח. אפשר רק לצפות.',syncErr:'השמירה נכשלה. נסה שוב.',holiday:'חג',vName:'ויקטור',vHere:'בארץ',vUntil:'בארץ עד ',vAbroad:'בחו״ל',vNext:'בחו״ל · נוחת ',vLand:'נחת ',vLeave:'עוזב ',vAdd:'ויקטור נוחת היום. עוזב ב-',vOpen:'בארץ · עזיבה לא ידועה',vUnknown:'(השאר ריק אם לא ידוע)',vSetLeave:'עוזב ב-',vSave:'עדכון',vLandHere:'ויקטור נוחת ביום הזה',vLeaveHere:'ויקטור עוזב ביום הזה',vReopen:'עזיבה לא ידועה',vFrom:'מ-',vAddBtn:'הוספת ביקור',vDel:'מחיקת הביקור',vVisit:'ויקטור בארץ ',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
+      past:'ימים שעברו',swapped:'הוחלף',moveTo:'להעביר',to:{i:'לאילן',l:'ללי ים'},undo:'לבטל את ההחלפה',undoShort:'ביטול',close:'סגור',swapsTitle:'החלפות קרובות',noSwaps:'אין החלפות.',swapNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח.',evAdd:'הוספה',evPh:'אירוע (למשל: תיאטרון)',evDel:'מחיקה',evsTitle:'אירועים קרובים',noEvs:'אין אירועים.',event:'אירוע',syncShared:'',sheetOk:'הנתונים נטענו מהגיליון. עודכן ב-',sheetNone:'לא הוגדר גיליון. מוצג הלו״ז הקבוע בלבד.',sheetFail:'לא הצלחתי לטעון את הגיליון. מוצג הלו״ז הקבוע בלבד.',sheetLoading:'טוען את הגיליון...',editSheet:'עריכה בגיליון',sheetNote:'החלפות ואירועים מוסיפים בגיליון. הלוח מתעדכן לבד תוך כמה דקות.',apiNote:'כדי להחליף יום או להוסיף אירוע, לוחצים על היום בלוח. בפעם הראשונה תתבקש להקליד קוד.',saving:'שומר...',syncLocal:'השינויים נשמרים רק במכשיר הזה.',syncRO:'אין לך הרשאה לשנות את הלוח. אפשר רק לצפות.',syncErr:'השמירה נכשלה. נסה שוב.',holiday:'חג',vName:'ויקטור',vHere:'בארץ',vUntil:'בארץ עד ',vAbroad:'בחו״ל',vNext:'בחו״ל · נוחת ',vLand:'נחת ',vLeave:'עוזב ',vAdd:'ויקטור נוחת היום. עוזב ב-',vOpen:'בארץ · עזיבה לא ידועה',vUnknown:'(השאר ריק אם לא ידוע)',vSetLeave:'עוזב ב-',vSave:'עדכון',vLandHere:'ויקטור נוחת ביום הזה',vLeaveHere:'ויקטור עוזב ביום הזה',vReopen:'עזיבה לא ידועה',vFrom:'מ-',pkTitle:'ביקור של ויקטור',pkLand:'נחיתה',pkLeave:'עזיבה',pkUnknown:'אפשר להשאיר עזיבה ריקה אם עוד לא ידוע',pkSave:'שמירה',pkCancel:'ביטול',pkOpen:'✈ ביקורים',pkVisits:'ביקורים קרובים (לחץ לעריכה):',pkNew:'+ ביקור חדש',pkLandOn:'נוחת ב-',pkEdit:'✏ עריכת הביקור',vAddBtn:'הוספת ביקור',vDel:'מחיקת הביקור',vVisit:'ויקטור בארץ ',holsTitle:'חגים ומועדים החודש',noHols:'אין חגים בחודש הזה.',
       note:'קבוע בכל שבוע: ראשון ורביעי אצל לי ים, שני ושלישי אצל אילן. חמישי וסופ״ש מתחלפים. החגים מוצגים לידיעה בלבד: הלו״ז לא משתנה בגללם.',
       h:{erh:'ערב ראש השנה',rh:'ראש השנה',eyk:'ערב יום כיפור',yk:'יום כיפור',esuk:'ערב סוכות',suk:'סוכות',chs:'חול המועד סוכות',st:'שמחת תורה',han:'חנוכה',tu:'ט״ו בשבט',pur:'פורים',spur:'שושן פורים',epes:'ערב פסח',pes:'פסח',chp:'חול המועד פסח',pes7:'שביעי של פסח',shoa:'יום השואה',zik:'יום הזיכרון',atz:'יום העצמאות',lag:'ל״ג בעומר',eshav:'ערב שבועות',shav:'שבועות',tba:'תשעה באב'}},
     ru:{dir:'ltr',h1:'Расписание детей',names:{i:'Илан ❤️',l:'Ли Ям'},at:{i:'у Илана ❤️',l:'у Ли Ям'},
@@ -190,7 +207,7 @@ function holidays(y){
       dayFull:['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
       months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
       today:'Сегодня',goToday:'Вернуться к сегодня',kids:'дети',weekend:'Ближайшие выходные',prev:'Предыдущий месяц',next:'Следующий месяц',
-      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день или добавить событие, нажмите на день в календаре.',evAdd:'Добавить',evPh:'Событие (например: театр)',evDel:'Удалить',evsTitle:'Ближайшие события',noEvs:'Событий нет.',event:'Событие',syncShared:'',sheetOk:'Данные загружены из таблицы. Обновлено в ',sheetNone:'Таблица не подключена. Показано только постоянное расписание.',sheetFail:'Не удалось загрузить таблицу. Показано только постоянное расписание.',sheetLoading:'Загрузка таблицы...',editSheet:'Редактировать в таблице',sheetNote:'Замены и события добавляются в таблице. Календарь обновится сам через несколько минут.',apiNote:'Чтобы поменять день или добавить событие, нажмите на день. В первый раз нужно ввести код.',saving:'Сохранение...',syncLocal:'Изменения сохраняются только на этом устройстве.',syncRO:'У вас нет прав менять календарь. Только просмотр.',syncErr:'Не удалось сохранить. Попробуйте ещё раз.',holiday:'Праздник',vName:'Витя',vHere:'в Израиле',vUntil:'в Израиле до ',vAbroad:'за границей',vNext:'за границей · прилёт ',vLand:'прилёт ',vLeave:'вылет ',vAdd:'Витя прилетает сегодня. Вылет ',vOpen:'в Израиле · дата вылета неизвестна',vUnknown:'(оставьте пустым, если неизвестно)',vSetLeave:'Вылет ',vSave:'Сохранить',vLandHere:'Витя прилетает в этот день',vLeaveHere:'Витя улетает в этот день',vReopen:'Дата вылета неизвестна',vFrom:'с ',vAddBtn:'Добавить визит',vDel:'Удалить визит',vVisit:'Витя в Израиле ',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
+      past:'Прошедшие дни',swapped:'Замена',moveTo:'Передать',to:{i:'Илану ❤️',l:'Ли Ям'},undo:'Отменить замену',undoShort:'Отменить',close:'Закрыть',swapsTitle:'Ближайшие замены',noSwaps:'Замен нет.',swapNote:'Чтобы поменять день или добавить событие, нажмите на день в календаре.',evAdd:'Добавить',evPh:'Событие (например: театр)',evDel:'Удалить',evsTitle:'Ближайшие события',noEvs:'Событий нет.',event:'Событие',syncShared:'',sheetOk:'Данные загружены из таблицы. Обновлено в ',sheetNone:'Таблица не подключена. Показано только постоянное расписание.',sheetFail:'Не удалось загрузить таблицу. Показано только постоянное расписание.',sheetLoading:'Загрузка таблицы...',editSheet:'Редактировать в таблице',sheetNote:'Замены и события добавляются в таблице. Календарь обновится сам через несколько минут.',apiNote:'Чтобы поменять день или добавить событие, нажмите на день. В первый раз нужно ввести код.',saving:'Сохранение...',syncLocal:'Изменения сохраняются только на этом устройстве.',syncRO:'У вас нет прав менять календарь. Только просмотр.',syncErr:'Не удалось сохранить. Попробуйте ещё раз.',holiday:'Праздник',vName:'Витя',vHere:'в Израиле',vUntil:'в Израиле до ',vAbroad:'за границей',vNext:'за границей · прилёт ',vLand:'прилёт ',vLeave:'вылет ',vAdd:'Витя прилетает сегодня. Вылет ',vOpen:'в Израиле · дата вылета неизвестна',vUnknown:'(оставьте пустым, если неизвестно)',vSetLeave:'Вылет ',vSave:'Сохранить',vLandHere:'Витя прилетает в этот день',vLeaveHere:'Витя улетает в этот день',vReopen:'Дата вылета неизвестна',vFrom:'с ',pkTitle:'Визит Вити',pkLand:'Прилёт',pkLeave:'Вылет',pkUnknown:'Дату вылета можно оставить пустой',pkSave:'Сохранить',pkCancel:'Отмена',pkOpen:'✈ Визиты',pkVisits:'Ближайшие визиты (нажмите, чтобы изменить):',pkNew:'+ Новый визит',pkLandOn:'Прилёт ',pkEdit:'✏ Изменить визит',vAddBtn:'Добавить визит',vDel:'Удалить визит',vVisit:'Витя в Израиле ',holsTitle:'Праздники в этом месяце',noHols:'В этом месяце праздников нет.',
       note:'Каждую неделю: воскресенье и среда у Ли Ям, понедельник и вторник у Илана. Четверг и выходные чередуются. Праздники показаны для сведения: расписание из-за них не меняется.',
       h:{erh:'Канун Рош ха-Шана',rh:'Рош ха-Шана',eyk:'Канун Йом Кипур',yk:'Йом Кипур',esuk:'Канун Суккот',suk:'Суккот',chs:'Холь ха-моэд Суккот',st:'Симхат Тора',han:'Ханука',tu:'Ту би-Шват',pur:'Пурим',spur:'Шушан Пурим',epes:'Канун Песаха',pes:'Песах',chp:'Холь ха-моэд Песах',pes7:'Седьмой день Песаха',shoa:'Йом ха-Шоа',zik:'Йом ха-Зикарон',atz:'Йом ха-Ацмаут',lag:'Лаг ба-Омер',eshav:'Канун Шавуот',shav:'Шавуот',tba:'Тиша бе-Ав'}}
   };
@@ -237,6 +254,31 @@ function holidays(y){
   }
   var visits=[];
   function vOn(n){for(var i=0;i<visits.length;i++)if(n>=visits[i].a&&n<=visits[i].b)return visits[i];return null;}
+  var vdraft=null;   // {a,b,edit} while the flight picker is open
+  function gridVisits(){if(!vdraft)return visits;var l=visits.filter(function(v){return v!==vdraft.edit;});
+    l=l.concat([{a:vdraft.a,b:vdraft.b===null?vdraft.a+3650:Math.max(vdraft.a,vdraft.b),open:vdraft.b===null,draft:true}]);return l;}
+  function vOnG(n,L){for(var i=0;i<L.length;i++)if(n>=L[i].a&&n<=L[i].b)return L[i];return null;}
+  function openPicker(edit,land){
+    vdraft=edit?{a:edit.a,b:edit.open?null:edit.b,edit:edit}:{a:land!==null?land:todayNum(),b:null,edit:null};
+    if(!edit&&land!==null){vy=new Date(land*864e5).getUTCFullYear();vm=new Date(land*864e5).getUTCMonth();}
+    var t=T[lang],p=$('vpick'),up=visits.filter(function(v){return v.b>=todayNum();}).sort(function(x,y){return x.a-y.a;});
+    p.hidden=false;
+    p.innerHTML='<h3><span style="font-size:1.4rem">✈</span>'+esc(t.pkTitle)+'</h3>'+
+      (!edit&&up.length?'<div class="note">'+esc(t.pkVisits)+'</div><div class="vlist">'+up.map(function(v,i){return '<button type="button" class="vbtn" data-vi="'+i+'">🛬 '+dm(v.a)+(v.open?'':' · 🛫 '+dm(v.b))+'</button>';}).join('')+'</div>':'')+
+      '<div class="legs"><label class="leg"><span class="ic">🛬</span><span class="lbl">'+esc(t.pkLand)+'</span><input type="date" id="pk-a" value="'+iso(vdraft.a)+'"></label>'+
+      '<label class="leg"><span class="ic">🛫</span><span class="lbl">'+esc(t.pkLeave)+'</span><input type="date" id="pk-b" value="'+(vdraft.b===null?'':iso(vdraft.b))+'" min="'+iso(vdraft.a)+'"></label></div>'+
+      '<p class="note">'+esc(t.pkUnknown)+'</p>'+
+      '<div class="acts"><button type="button" class="save" id="pk-save">'+esc(t.pkSave)+'</button>'+(edit?'<button type="button" id="pk-del">'+esc(t.vDel)+'</button>':'')+'<button type="button" id="pk-cancel">'+esc(t.pkCancel)+'</button></div>';
+    $('pk-a').onchange=function(){var x=readDate('pk-a');if(x===null||x===undefined)return;vdraft.a=x;$('pk-b').min=iso(x);if(vdraft.b!==null&&vdraft.b<x){vdraft.b=null;$('pk-b').value='';}vy=new Date(x*864e5).getUTCFullYear();vm=new Date(x*864e5).getUTCMonth();render();};
+    $('pk-b').onchange=function(){var x=readDate('pk-b');if(x===undefined)return;if(x!==null&&x<vdraft.a){$('pk-b').value='';x=null;}vdraft.b=x;render();};
+    $('pk-cancel').onclick=closePicker;
+    $('pk-save').onclick=function(){var d=vdraft;closePicker();
+      if(d.edit){if(d.edit.a===d.a){setLeave(d.edit,d.b);}else{delVisit(d.edit);addVisit(d.a,d.b);}}else addVisit(d.a,d.b);render();};
+    if($('pk-del'))$('pk-del').onclick=function(){var d=vdraft;closePicker();delVisit(d.edit);render();};
+    p.querySelectorAll('[data-vi]').forEach(function(btn){btn.onclick=function(){openPicker(up[+btn.getAttribute('data-vi')],null);};});
+    render();p.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+  function closePicker(){vdraft=null;var p=$('vpick');p.hidden=true;p.innerHTML='';render();}
   function evOn(n){var a=[];for(var k in events)if(events[k].n===n)a.push(k);return a;}
   function W(n){var b=who(n);return swaps[n]?(b==='i'?'l':'i'):b;}
   function dmy(n){var d=new Date(n*864e5);return d.getUTCDate()+'.'+(d.getUTCMonth()+1)+'.'+String(d.getUTCFullYear()).slice(2);}
@@ -274,18 +316,19 @@ function holidays(y){
       '<div><b>'+esc(t.weekend)+'</b> ('+dm(fri)+' - '+dm(sat)+'): <span class="chip '+ww+'">'+esc(t.at[ww])+'</span></div>'+
       (function(){var cur=vOn(tn),nx=null;visits.forEach(function(v){if(v.a>tn&&(!nx||v.a<nx.a))nx=v;});
         var txt=cur?(cur.open?t.vOpen:t.vUntil+dm(cur.b)):(nx?t.vNext+dm(nx.a):t.vAbroad);
-        return '<div><b>'+esc(t.vName)+'</b>: <span class="chip'+(cur?' v':'')+'">'+esc(txt)+'</span></div>';})();
+        return '<div><b>'+esc(t.vName)+'</b>: <span class="chip'+(cur?' v':'')+'">'+esc(txt)+'</span>'+(ro?'':'<button type="button" class="vbtn vopen-btn" id="vopen">'+esc(t.pkOpen)+'</button>')+'</div>';})();
+    if($('vopen'))$('vopen').onclick=function(){openPicker(null,null);};
 
     // grid
-    var first=dn(vy,vm,1), last=dn(vy,vm+1,0), hm=holMap(vy), h='', n, i;
+    var first=dn(vy,vm,1), last=dn(vy,vm+1,0), hm=holMap(vy), h='', n, i, GV=gridVisits();
     t.days.forEach(function(d){h+='<div class="dayname">'+esc(d)+'</div>';});
     for(n=first;n<=last;n++){
-      var c=W(n), cls='cell '+c+(n<tn?' past':'')+(n===tn?' today':'')+(swaps[n]?' swapped':'')+(sel===n?' sel':'');
+      var c=W(n), cls='cell '+c+(n<tn?' past':'')+(n===tn?' today':'')+(swaps[n]?' swapped':'')+(sel===n?' sel':'')+(vdraft&&n===vdraft.a?' vdraft-a':'')+(vdraft&&vdraft.b!==null&&n===vdraft.b?' vdraft-b':'');
       h+='<div role="button" tabindex="0" data-n="'+n+'" style="grid-column:'+(dow(n)+1)+'" class="'+cls+'"'+(hm[n]?' title="'+esc(t.h[hm[n]])+'"':'')+'>'+(hm[n]?'<span class="hd"></span>':'')+
-         (swaps[n]?'<span class="sw">⇄</span>':'')+'<span class="d">'+(n-first+1)+'</span><span>'+esc(t.names[c])+'</span>'+evOn(n).map(function(k){return '<span class="ev">'+esc(events[k].title)+'</span>';}).join('')+'</div>';
+         (swaps[n]?'<span class="sw">⇄</span>':'')+(function(){var vv=vOnG(n,GV);if(!vv)return '';if(n===vv.a)return '<span class="vic">🛬</span>';if(n===vv.b&&!vv.open)return '<span class="vic">🛫</span>';return '';})()+'<span class="d">'+(n-first+1)+'</span><span>'+esc(t.names[c])+'</span>'+evOn(n).map(function(k){return '<span class="ev">'+esc(events[k].title)+'</span>';}).join('')+'</div>';
       if(dow(n)===6||n===last){                       // end of a week row: draw Victor's band under it
         var ws=Math.max(first,n-dow(n)),x=ws;
-        while(x<=n){var v=vOn(x);if(!v){x++;continue;}
+        while(x<=n){var v=vOnG(x,GV);if(!v){x++;continue;}
           var a=x,b=Math.min(n,v.b),len=b-a+1,txt;
           var st=a===v.a, en=b===v.b&&!v.open;
           if(len<=2)txt=t.vName;
@@ -293,7 +336,7 @@ function holidays(y){
           else if(len<=4&&en)txt='🛫 '+t.vLeave+dm(v.b);
           else if(len<=4)txt=t.vName+' '+t.vHere;
           else txt=(a===v.a?'🛬 '+t.vLand+dm(v.a)+' · ':'')+t.vName+' '+t.vHere+(b===v.b&&!v.open?' · 🛫 '+t.vLeave+dm(v.b):'');
-          h+='<div class="vband'+(b<tn?' past':'')+'" style="grid-column:'+(dow(a)+1)+' / '+(dow(b)+2)+'" title="'+esc(t.vVisit+dm(v.a)+(v.open?'':' - '+dm(v.b)))+'">'+esc(txt)+'</div>';
+          h+='<div class="vband'+(v.draft?' draft':'')+(b<tn&&!v.draft?' past':'')+'" style="grid-column:'+(dow(a)+1)+' / '+(dow(b)+2)+'" title="'+esc(t.vVisit+dm(v.a)+(v.open?'':' - '+dm(v.b)))+'">'+esc(txt)+'</div>';
           x=b+1;}
       }
     }
@@ -309,21 +352,14 @@ function holidays(y){
         (function(){var v=vOn(sel),h2='';
           if(v)h2+='<div class="evitem"><span class="chip v">'+esc(t.vVisit+(v.open?t.vFrom+dm(v.a):dm(v.a)+' - '+dm(v.b)))+'</span></div>';
           if(ro)return h2;
-          var prev=null;visits.forEach(function(x){if(x.a<=sel&&(!prev||x.a>prev.a))prev=x;});   // visit to end on this day
-          var btn='';
-          if(!v)btn+='<button type="button" class="vbtn" id="vland">🛬 '+esc(t.vLandHere)+'</button>';
-          if(prev&&!(prev.b===sel&&!prev.open))btn+='<button type="button" class="vbtn" id="vleaveday">🛫 '+esc(t.vLeaveHere)+'</button>';
-          if(v&&!v.open)btn+='<button type="button" id="vreopen">'+esc(t.vReopen)+'</button>';
-          if(v)btn+='<button type="button" id="vdel">'+esc(t.vDel)+'</button>';
-          return h2+(btn?'<div class="vform">'+btn+'</div>':'');})()+
+          return h2+'<div class="vform">'+(v?'<button type="button" class="vbtn big" id="vedit">'+esc(t.pkEdit)+'</button>'
+            :'<button type="button" class="vbtn big" id="vland"><span style="font-size:1.5rem">🛬</span><span>'+esc(t.vName)+'</span><span class="when">'+dm(sel)+'</span></button>')+'</div>';})()+
         (ro?'':'<form class="evadd" id="evform"><input id="evtitle" maxlength="80" placeholder="'+esc(t.evPh)+'" aria-label="'+esc(t.event)+'"><button type="submit">'+esc(t.evAdd)+'</button></form>');
       if(!ro){
         $('do-swap').onclick=function(){toggleSwap(sel);sel=null;render();};
         $('evform').onsubmit=function(e){e.preventDefault();var v=$('evtitle').value;if(v.trim()){addEvent(sel,v);render();}};
-        if($('vdel'))$('vdel').onclick=function(){var v=vOn(sel);if(v){delVisit(v);sel=null;render();}};
-        if($('vland'))$('vland').onclick=function(){addVisit(sel,null);sel=null;render();};
-        if($('vleaveday'))$('vleaveday').onclick=function(){var pv=null;visits.forEach(function(x){if(x.a<=sel&&(!pv||x.a>pv.a))pv=x;});if(pv){setLeave(pv,sel);sel=null;render();}};
-        if($('vreopen'))$('vreopen').onclick=function(){var v=vOn(sel);if(v){setLeave(v,null);sel=null;render();}};
+        if($('vland'))$('vland').onclick=function(){var d=sel;sel=null;openPicker(null,d);};
+        if($('vedit'))$('vedit').onclick=function(){var v=vOn(sel);sel=null;if(v)openPicker(v,null);};
         p.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){delEvent(b.getAttribute('data-ed'));render();};});
       }
       $('no-swap').onclick=function(){sel=null;render();};
